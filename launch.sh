@@ -118,4 +118,26 @@ docker run --name ecs-agent \
     --env=ECS_ENABLE_TASK_IAM_ROLE_NETWORK_HOST=true \
     amazon/amazon-ecs-agent:latest
 
-sudo reboot
+# Construct the URL using the provided AWS region
+URL="https://s3.$AWS_REGION.amazonaws.com/amazon-ecs-agent-$AWS_REGION/amazon-ecs-init-latest.amd64.deb"
+# Download the file using curl
+curl -O "$URL"
+# Install ecs agent from relative zone
+dpkg -i amazon-ecs-init-latest.amd64.deb
+
+file_path="/lib/systemd/system/ecs.service"
+# Define the old and new strings
+old_string="After=docker.service"
+
+new_string="After=docker.service cloud-final.service"
+# Replace the old string with the new one using sed
+sed -i "s/$old_string/$new_string/" "$file_path"
+
+echo "Line added successfully."
+
+sudo systemctl daemon-reload
+# set ecs to auto start
+systemctl enable ecs
+# Run the agent - Bug doesn't start ecs automatically
+
+# sudo reboot
