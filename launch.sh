@@ -125,5 +125,6 @@ sudo systemctl daemon-reload
 # set ecs to auto start
 systemctl enable ecs
 # Run the agent - Bug doesn't start ecs automatically
+systemctl start ecs
 
 # sudo reboot
