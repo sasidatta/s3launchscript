@@ -104,20 +104,6 @@ if [ -z "$AWS_REGION" ]; then
     AWS_REGION="us-east-1"
 fi
 
-docker run --name ecs-agent \
-    --detach=true \
-    --restart=on-failure:10 \
-    --volume=/var/run/docker.sock:/var/run/docker.sock \
-    --volume=/var/log/ecs:/log \
-    --volume=/var/lib/ecs/data:/data \
-    --net=host \
-    --env-file=/etc/ecs/ecs.config \
-    --env=ECS_LOGFILE=/log/ecs-agent.log \
-    --env=ECS_DATADIR=/data/ \
-    --env=ECS_ENABLE_TASK_IAM_ROLE=true \
-    --env=ECS_ENABLE_TASK_IAM_ROLE_NETWORK_HOST=true \
-    amazon/amazon-ecs-agent:latest
-
 # Construct the URL using the provided AWS region
 URL="https://s3.$AWS_REGION.amazonaws.com/amazon-ecs-agent-$AWS_REGION/amazon-ecs-init-latest.amd64.deb"
 # Download the file using curl
